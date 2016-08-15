@@ -6,6 +6,6 @@ var namm = require('./namm');
 namm.require("./models")
   //.stripe(require('./stripeOptions'))
   .share({plans: require('./stripeOptions').planData})
-  .routes('./routes')
+  //.routes('./routes')
   .connectors('./connectors')
   .init();

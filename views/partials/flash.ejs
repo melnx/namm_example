@@ -1,0 +1,20 @@
+<div class="row" id="flash">
+  <% if(messages.error) { %>
+  <div class="alert alert-danger">
+    <h4>Wipeout!</h4>
+    <%- messages.error %>
+  </div>
+  <% } %>
+  <% if(messages.info) { %>
+  <div class="alert alert-info">
+    <h4>Heads Up!</h4>
+    <%- messages.info %>
+  </div>
+  <% } %>
+  <% if(messages.success) { %>
+  <div class="alert alert-success">
+    <h4>Cowabunga!</h4>
+    <%- messages.success %>
+  </div>
+  <% } %>
+</div>
