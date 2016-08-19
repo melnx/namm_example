@@ -341,6 +341,17 @@ function setupEndpoints(modelName, modelProperties) {
       }
   }
 
+  function autoPopulate(query){
+      Object.keys(modelProperties).forEach(function(i) {
+          if (modelProperties[i].ref) {
+              if(debug){ console.log(modelName + " AUTO POPULATE " + i); }
+              query.populate(i);
+          }
+      });
+
+      query.populate('__owner');
+  }
+
   //$internal HIDDEN FROM ALL
   //$hidden HIDDEN FROM NON-ADMINS
 
@@ -418,14 +429,7 @@ function setupEndpoints(modelName, modelProperties) {
                 query.sort(sort);
             }
 
-            Object.keys(modelProperties).forEach(function(i) {
-                if (modelProperties[i].ref) {
-                    if(debug){ console.log(modelName + " AUTO POPULATE " + i); }
-                    query.populate(i);
-                }
-            });
-
-            query.populate('__owner');
+            autoPopulate(query);
 
             query.exec(function(err, result) {
                 /*res.send({
@@ -458,14 +462,7 @@ function setupEndpoints(modelName, modelProperties) {
     }else{
         var query = model.find(q);
 
-        Object.keys(modelProperties).forEach(function(i) {
-          if (modelProperties[i].ref) {
-            if(debug){ console.log(modelName + " AUTO POPULATE " + i); }
-            query.populate(i);
-          }
-        });
-
-        query.populate('__owner');
+        autoPopulate(query);
 
         if(req.query['$sort']){
             var sort = req.query['$sort'].length && req.query['$sort'][0] == '{' ? JSON.parse(req.query['$sort']) : req.query['$sort'];
@@ -560,12 +557,7 @@ function setupEndpoints(modelName, modelProperties) {
 
     if(debug){ console.log("GET QUERY: ", q); }
 
-    Object.keys(modelProperties).forEach(function(i) {
-        if (modelProperties[i].ref) {
-          if(debug){ console.log(modelName + " AUTO POPULATE " + i); }
-          query.populate(i);
-        }
-    });
+    autoPopulate(query);
 
     query.exec(function(err, result) {
 
