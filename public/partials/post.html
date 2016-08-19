@@ -26,14 +26,14 @@
             </span>
         </div>
         <div style="font-size:10px; font-weight:bold; margin-top:4px;">
-            <a style="color:rgb(136, 136, 136);" href="/Posts/{{post._id}}">{{post.commentCount || '0'}} comments</a>
+            <a style="color:rgb(136, 136, 136); cursor:pointer;" href="/Posts/{{post._id}}">{{post.commentCount || '0'}} comments</a>
             &nbsp;
-            <a style="color:rgb(136, 136, 136);">share</a>
+            <a style="color:rgb(136, 136, 136); cursor:pointer;">share</a>
             &nbsp;
-            <a style="color:rgb(136, 136, 136);">[l+c]</a>
+            <a style="color:rgb(136, 136, 136); cursor:pointer;">[l+c]</a>
             &nbsp;
             <span ng-if="post.__owner._id == $root._user._id">
-                <a style="color:rgb(136, 136, 136);" ng-click="delete(post, posts)">delete</a>
+                <a style="color:rgb(136, 136, 136); cursor:pointer;" ng-click="delete(post, posts)">delete</a>
             </span>
         </div>
         <div ng-show="showFull" style="margin-top:10px;"><img style="max-height:500px;" src="{{post.image}}" /></div>
