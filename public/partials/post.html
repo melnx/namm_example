@@ -34,9 +34,13 @@
             &nbsp;
             <span ng-if="post.__owner._id == $root._user._id">
                 <a style="color:rgb(136, 136, 136); cursor:pointer;" ng-click="delete(post, posts)">delete</a>
+                &nbsp;
+                <a style="color:rgb(136, 136, 136); cursor:pointer;" href="/Posts/{{post._id}}/edit">edit</a>
             </span>
         </div>
-        <div ng-show="showFull" style="margin-top:10px;"><img style="max-height:500px;" src="{{post.image}}" /></div>
+        <div ng-if="showFull" style="margin-top:10px;">
+            <div ng-include="'/partials/preview.html'"></div>
+        </div>
     </div>
 
 </div>

@@ -12,8 +12,7 @@
 
         <span style="font-weight:bold; font-size:10px;">{{comment.points || '0'}} points</span>
         <span style="font-size:10px; color:rgb(136,136,136);">{{comment.created | timeago}}</span>
-        <div ng-hide="hide">
-            {{comment.name}}
+        <div ng-hide="hide" ng-bind-html="comment.name | parseUrl">
         </div>
 
         <div ng-hide="hide" style="font-weight:bold; font-size:10px; color:rgb(136, 136, 136);">

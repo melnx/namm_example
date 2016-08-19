@@ -1,0 +1,13 @@
+<div ng-init="item = comment || post; item.defaultView = true;">
+
+    <div ng-if="item.url.indexOf('youtube') >= 0">
+        <iframe ng-init="item.defaultView=false" width="854" height="480" src="{{getYoutubeUrl(item.url)}}" frameborder="0" allowfullscreen></iframe>
+    </div>
+    <div ng-if="item.url.indexOf('soundcloud') >= 0">
+        <iframe ng-init="item.defaultView=false" width="100%" height="450" scrolling="no" frameborder="no" src="{{getSoundcloudUrl(item.url)}}"></iframe>
+    </div>
+    <div ng-if="item.defaultView">
+        <img style="max-height:500px;" src="{{item.image}}" />
+    </div>
+
+</div>
