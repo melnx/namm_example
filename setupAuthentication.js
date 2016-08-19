@@ -258,7 +258,7 @@ function setupAuthentication(app) {
 
   /* Handle Registration POST */
   app.post('/signup', passport.authenticate('signup', {
-    successRedirect: '/Campaigns',
+    successRedirect: '/Posts',
     failureRedirect: '/signup',
     failureFlash: true
   }));
