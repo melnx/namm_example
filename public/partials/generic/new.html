@@ -1,0 +1,10 @@
+<div ng-init="new()">
+    <div ng-repeat="(key,value) in item">
+        <label>{{key}}</label>
+        <br />
+        <input ng-model="item[key]" />
+    </div>
+</div>
+
+<hr />
+<button class="btn btn-success" ng-click="create()">Create</button>

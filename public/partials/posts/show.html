@@ -1,0 +1,21 @@
+<a class="btn btn-success btn-sm pull-right" href="/Posts/new" style="margin-top:-60px;">+ New Post</a>
+<div class="clearfix"></div>
+
+<div ng-init="load(); loadComments();">
+    <div ng-include="'/partials/post.html'"></div>
+    {{item.content}}
+    <br />
+    <hr />
+
+    <div>
+        <div style="font-size:13px;">Speaking as: {{$root._user.name}}</div>
+        <textarea ng-model="replyText" style="height:80px; width:300px;"></textarea>
+        <br />
+        <button class="btn btn-success btn-sm" ng-click="reply(replyText)">reply</button>
+    </div>
+    <hr />
+
+    <div ng-repeat="comment in comments | orderBy:'-points'" >
+        <div ng-if="!comment._parent" ng-init="comment.childCommentCount=0" ng-include="'/partials/comment.html'"></div>
+    </div>
+</div>

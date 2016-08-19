@@ -1,0 +1,7 @@
+<a class="btn btn-success btn-sm pull-right" href="/Posts/new" style="margin-top:-60px;">+ New Post</a>
+<div class="clearfix"></div>
+
+<div ng-init="loadPosts()" style="margin-top:20px;">
+    <div ng-repeat="post in posts | orderBy:'-points'" ng-include="'/partials/post.html'">
+    </div>
+</div>

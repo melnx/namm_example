@@ -154,6 +154,14 @@ function setupEndpoints(modelName, modelProperties) {
       hiddenProperties.forEach(function(k){
          item[k] = null;
       });
+
+      if(item.__owner){
+          item.__owner.password = null;
+          item.__owner.email = null;
+          item.__owner.phone = null;
+          item.__owner.fullName = null;
+          item.__owner.username = null;
+      }
   }
   function cleanResult(req, result){
       var hiddenProperties = [];
@@ -169,7 +177,7 @@ function setupEndpoints(modelName, modelProperties) {
       if(result instanceof Array){
           result.forEach(function(i){
               cleanItem(i, hiddenProperties);
-      });
+          });
       }else{
           cleanItem(result, hiddenProperties);
       }
@@ -417,6 +425,8 @@ function setupEndpoints(modelName, modelProperties) {
                 }
             });
 
+            query.populate('__owner');
+
             query.exec(function(err, result) {
                 /*res.send({
                     count: count,
@@ -454,6 +464,8 @@ function setupEndpoints(modelName, modelProperties) {
             query.populate(i);
           }
         });
+
+        query.populate('__owner');
 
         if(req.query['$sort']){
             var sort = req.query['$sort'].length && req.query['$sort'][0] == '{' ? JSON.parse(req.query['$sort']) : req.query['$sort'];

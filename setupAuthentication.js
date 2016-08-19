@@ -1,7 +1,8 @@
 //For Reset Password
 var async = require('async');
-var mg_api_key = 'key-a996bc9954ee42530f02a36de623c3c2';
-var mg_domain = 'messaging.banzaihq.com';
+var config = require('./config.js');
+var mg_api_key = config.mg_api_key;
+var mg_domain = config.mg_domain;
 var mailgun = require('mailgun-js')({
   apiKey: mg_api_key,
   domain: mg_domain
@@ -12,7 +13,7 @@ var passwordHash = require('password-hash');
 var md5 = require('blueimp-md5');
 var flash = require('express-flash');
 var mongoose = require('mongoose');
-var config = require('./config.js');
+
 Schema = mongoose.Schema;
 
 function setupUserModel(userModel){
@@ -151,7 +152,7 @@ function setupAuthentication(app) {
         // find a user in Mongo with provided username
         console.log('SIGNUP: (attempt)');
 
-        if (req.body.secretkey != '1Banzai!') {
+        if (req.body.secretkey != '1Melnx!') {
           console.log("SECRET KEY DOESN'T MATCH");
           return done(null, false,
             req.flash('error', "Secret Key didn't match. Please try again!"));
@@ -236,7 +237,7 @@ function setupAuthentication(app) {
         req.logIn(user, function(err) {
             if (err) { return next(err); }
             // Redirect if it succeeds
-            var redirectPath = user.role == "agent" ? "/Tasks" : "/Campaigns";
+            var redirectPath = "/Posts"; // user.role == "agent" ? "/Tasks" : "/Campaigns";
             return res.redirect(redirectPath);
         });
     })(req, res, next);

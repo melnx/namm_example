@@ -1,0 +1,42 @@
+<div class="row" ng-style="{padding:'5px', margin:'8px 0 8px 0', background: comment.parity ? 'rgb(247, 247, 248)' : 'white', border:'1px solid rgb(230, 230, 230)'}" ng-init="thisComment = comment">
+    <div class="col-lg-1 col-sm-1 col-md-1" style="font-size:13px; width:30px; font-family:arial, verdana;">
+        <i class="fa fa-arrow-up hand" ng-click="upvoteComment(comment)" ng-style="{color: !comment.upvoted ? 'rgb(198, 198, 198)' : 'rgb(198, 10, 10)'}"></i>
+        <i class="fa fa-arrow-down hand" ng-click="downvoteComment(comment)" ng-style="{color: !comment.downvoted ? 'rgb(198, 198, 198)' : 'rgb(198, 10, 10)'}"></i>
+    </div>
+    <div class="col-lg-11 col-sm-11 col-md-11">
+        <a ng-init="hide=false" ng-click="hide = !hide" style="cursor:pointer;">[&nbsp;{{!hide ? '-' : '+'}}&nbsp;]</a>
+        <a style="font-weight:bold" href="/Users/{{comment.__owner}}">{{comment.__owner.name}}</a>
+        <span style="font-weight:bold">{{comment.points || '0'}} points</span>
+        <span>{{comment.created | timeago}}</span>
+        <div ng-hide="hide">
+            {{comment.name}}
+        </div>
+
+        <div ng-hide="hide" style="font-weight:bold; font-size:10px; color:rgb(136, 136, 136); cursor:pointer;">
+            <a style="color:rgb(136, 136, 136);" ng-init="replyToComment=false;" ng-click="replyToComment = !replyToComment">reply</a>
+            &nbsp;
+            <span>({{comment.replyCount || '0'}} {{comment.replyCount == 1 ? 'reply' : 'replies'}})</span>
+            &nbsp;
+            <span ng-init="hideChildComments = false;" ng-show="comment.replyCount">
+                <a style="color:rgb(136, 136, 136);" ng-click="hideChildComments=!hideChildComments">{{!hideChildComments ? 'hide child comments' : 'show ' + thisComment.childCommentCount + ' child comments'}}</a>
+                &nbsp;
+            </span>
+            <span ng-if="comment.__owner._id == $root._user._id">
+                <a style="color:rgb(136, 136, 136);" ng-click="delete(comment, comments, false, 'Comment')">delete</a>
+            </span>
+        </div>
+
+        <div ng-show="replyToComment" ng-init="subReplyText = ''">
+            <div style="font-size:13px;">Speaking as: {{$root._user.name}}</div>
+            <textarea ng-model="subReplyText" style="height:80px; width:300px;"></textarea>
+            <br />
+            <button class="btn btn-success btn-sm" ng-click="reply(subReplyText, comment._id)">reply</button>
+        </div>
+
+        <div ng-hide="hide || hideChildComments" style="margin-top:10px;">
+            <div ng-repeat="comment in comments | orderBy:'-points'">
+                <div ng-if="comment._parent._id == thisComment._id" ng-init="comment.parity = !thisComment.parity; comment.rootComment=thisComment.rootComment||thisComment; comment.rootComment.childCommentCount=comment.rootComment.childCommentCount+1" ng-include="'/partials/comment.html'"></div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,8 @@
+<div ng-init="list()">
+    <div ng-repeat="item in items">
+        <a href="{{item._id}}">{{item._id}} {{item.name}}</a>
+    </div>
+</div>
+
+<hr />
+<a class="btn btn-success" href="./new">Add</a>
