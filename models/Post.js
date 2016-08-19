@@ -33,7 +33,7 @@ module.exports = {
                 if($scope.item.image && $scope.item.image.length){
                     $scope.create();
                 }else{
-                    $http({method:"GET", url:"http://opengraph.io/api/1.0/site/" + $scope.item.url}).then(
+                    $http({method:"GET", url:"https://opengraph.io/api/1.0/site/" + $scope.item.url}).then(
                         function(resp){
                             console.log("LOOKED UP URL DATA");
                             console.log(resp);
