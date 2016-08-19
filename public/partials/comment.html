@@ -5,9 +5,13 @@
     </div>
     <div class="col-lg-11 col-sm-11 col-md-11">
         <a ng-init="hide=false" ng-click="hide = !hide" style="cursor:pointer;">[&nbsp;{{!hide ? '-' : '+'}}&nbsp;]</a>
-        <a style="font-weight:bold" href="/Users/{{comment.__owner}}">{{comment.__owner.name}}</a>
-        <span style="font-weight:bold">{{comment.points || '0'}} points</span>
-        <span>{{comment.created | timeago}}</span>
+        <span>
+            <a style="font-weight:bold; font-family: verdana, arial; font-size:10px; color:rgb(51, 102, 153);" href="/Users/{{comment.__owner._id}}">{{comment.__owner.name}}</a>
+            <i class="fa fa-tag" style="color:lightblue; font-size:12px;"></i>
+        </span>
+
+        <span style="font-weight:bold; font-size:10px;">{{comment.points || '0'}} points</span>
+        <span style="font-size:10px; color:rgb(136,136,136);">{{comment.created | timeago}}</span>
         <div ng-hide="hide">
             {{comment.name}}
         </div>
@@ -18,7 +22,7 @@
             <span>({{comment.replyCount || '0'}} {{comment.replyCount == 1 ? 'reply' : 'replies'}})</span>
             &nbsp;
             <span ng-init="hideChildComments = false;" ng-show="comment.replyCount">
-                <a style="color:rgb(136, 136, 136);" ng-click="hideChildComments=!hideChildComments">{{!hideChildComments ? 'hide child comments' : 'show ' + thisComment.childCommentCount + ' child comments'}}</a>
+                <a style="color:rgb(136, 136, 136);" ng-click="hideChildComments=!hideChildComments">{{!hideChildComments ? 'hide child comments' : 'show ' + thisComment.childCommentCount + ' child ' + (thisComment.childCommentCount == 1 ? 'comment' : 'comments')}}</a>
                 &nbsp;
             </span>
             <span ng-if="comment.__owner._id == $root._user._id">
