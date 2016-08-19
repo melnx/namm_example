@@ -1,12 +1,12 @@
 <div ng-init="new()">
     Title<br />
-    <input type="text" ng-model="item.name" /><br />
+    <input style="width:500px;" type="text" ng-model="item.name" /><br />
     Url<br />
-    <input type="text" ng-model="item.url" /><br />
+    <input style="width:500px;" type="text" ng-model="item.url" /><br />
     Content<br />
-    <textarea type="text" ng-model="item.content"></textarea><br />
+    <textarea style="height:120px; width:500px;" type="text" ng-model="item.content"></textarea><br />
     Image (Override)<br />
-    <input type="text" ng-model="item.image" /><br />
-
+    <input style="width:500px;" type="text" ng-model="item.image" /><br />
+    <br />
     <button ng-click="createPost()" type="submit" class="btn btn-primary">Post</button>
 </div>

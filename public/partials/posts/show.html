@@ -9,7 +9,7 @@
 
     <div>
         <div style="font-size:13px;">Speaking as: {{$root._user.name}}</div>
-        <textarea ng-model="replyText" style="height:80px; width:300px;"></textarea>
+        <textarea ng-init="replyText={content:''}" ng-model="replyText.content" style="height:80px; width:300px;"></textarea>
         <br />
         <button class="btn btn-success btn-sm" ng-click="reply(replyText)">reply</button>
     </div>

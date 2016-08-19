@@ -26,9 +26,9 @@
             </span>
         </div>
 
-        <div ng-show="replyToComment" ng-init="subReplyText = ''">
+        <div ng-show="replyToComment" ng-init="subReplyText = {content:''}">
             <div style="font-size:13px;">Speaking as: {{$root._user.name}}</div>
-            <textarea ng-model="subReplyText" style="height:80px; width:300px;"></textarea>
+            <textarea ng-model="subReplyText.content" style="height:80px; width:300px;"></textarea>
             <br />
             <button class="btn btn-success btn-sm" ng-click="reply(subReplyText, comment._id)">reply</button>
         </div>

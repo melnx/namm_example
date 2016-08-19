@@ -73,10 +73,15 @@ module.exports = {
             }
 
             $scope.reply = function(content, comment){
-                var reply = {name: content, _post:$scope._id};
+                if(!content || !content.content || content.content == ''){
+                    return;
+                }
+
+                var reply = {name: content.content, _post:$scope._id};
                 if(comment){
                     reply._parent = comment;
                 }
+                content.content = '';
                 $scope.action('result', 'Comment', 'create', null, reply, 'post', 'loadComments');
             }
 
