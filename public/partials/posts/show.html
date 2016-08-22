@@ -1,7 +1,7 @@
 <a class="btn btn-success btn-sm pull-right" href="/Posts/new" style="margin-top:-60px;">+ New Post</a>
 <div class="clearfix"></div>
 
-<div ng-init="load(); loadComments();">
+<div ng-init="load(); loadComments(_id);">
     <div ng-include="'/partials/post.html'"></div>
     {{item.content}}
     <br />
@@ -11,7 +11,7 @@
         <div style="font-size:13px;">Speaking as: {{$root._user.name}}</div>
         <textarea ng-init="replyText={content:''}" ng-model="replyText.content" style="height:80px; width:300px;"></textarea>
         <br />
-        <button class="btn btn-success btn-sm" ng-click="reply(replyText)">reply</button>
+        <button class="btn btn-success btn-sm" ng-click="reply(replyText, _id, null, null)">reply</button>
     </div>
     <hr />
 

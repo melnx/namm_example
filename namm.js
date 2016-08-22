@@ -387,6 +387,7 @@ function setupEndpoints(modelName, modelProperties) {
       if(key[0] == '$' && key != '$or') return;
 
       if(modelProperties[key] && modelProperties[key].ref){
+          console.log("attempting to create id: ", req.query[key]);
           q[key] = mongoose.Types.ObjectId(req.query[key]);
       }else{
 

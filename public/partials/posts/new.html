@@ -8,5 +8,6 @@
     Image (Override)<br />
     <input style="width:500px;" type="text" ng-model="item.image" /><br />
     <br />
-    <button ng-click="createPost()" type="submit" class="btn btn-primary">Post</button>
+    <div ng-if="_parameters._sub" style="margin-bottom: 10px;" ng-init="action('sub', 'Sub', 'get', _parameters._sub)">Posting to sub: {{sub.name}}</div>
+    <button ng-click="createPost(item, _parameters._sub)" type="submit" class="btn btn-primary">Post</button>
 </div>

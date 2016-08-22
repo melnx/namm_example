@@ -17,6 +17,11 @@ module.exports = {
             ref: 'Comment'
         },
 
+        _root: {
+            type: Schema.Types.ObjectId,
+            ref: 'Comment'
+        },
+
         created: Date,
         updated: Date,
 

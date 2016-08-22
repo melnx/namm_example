@@ -365,7 +365,14 @@
     initDefaultControllers(models);
     initDefaultRoutes(models);
 
-    function initDefaultActions(modelName, $scope, $http, $window, $route) {
+    function initDefaultActions(modelName, $scope, $http, $window, $route, $location) {
+
+      $scope.$on('$routeChangeSuccess', function() {
+         console.log('route changed');
+         //console.log($location.search());
+         $scope._parameters = $location.search();
+      });
+
       $scope.get_date = function(str) {
         if (!str) return new Date()
         return new Date(str)
@@ -471,9 +478,9 @@
               FlashMsg: 'Successfully created new ' + modelName
             });
             if ($window.location.href.indexOf(modelName + 's/new') >= 0) {
-              window.setTimeout(function() {
+              //window.setTimeout(function() {
                 $window.location.href = '/' + modelName + 's/';
-              }, 3000);
+              //}, 3000);
             }
             $scope.reset();
             if ($scope._listed) {
@@ -842,8 +849,8 @@
 
         var model = models[modelName];
 
-        var defaultInitFunction = function($scope, $http, $window, $route) {
-          initDefaultActions(modelName, $scope, $http, $window, $route);
+        var defaultInitFunction = function($scope, $http, $window, $route, $location) {
+          initDefaultActions(modelName, $scope, $http, $window, $route, $location);
           execDefaultActions($scope);
           $scope.$parent._controller = $scope._controller = model;
           console.log("CONTROLLER: " + modelName);
