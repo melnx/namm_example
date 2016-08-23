@@ -341,7 +341,7 @@
             if (targetProperty) {
               setTargetProperty($scope, targetProperty, response.data);
             }
-            callCallback($scope, callback, response, targetProperty, callbackParameters);
+            callCallback($scope, callback, response.data, targetProperty, callbackParameters);
           },
           function(err) {
             console.log(err);

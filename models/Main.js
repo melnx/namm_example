@@ -97,8 +97,8 @@ module.exports = {
 
                 query._post = post || $scope._id;
 
-                if(post && post.data){
-                    query._post = post.data._post;
+                if(post && post._post){
+                    query._post = post._post;
                 }else{
                     $scope.comments = [];
                 }
@@ -126,19 +126,19 @@ module.exports = {
 
             $scope.upvoteComment = function(comment){
                 $scope.action("voteResult", "util", "upvoteComment", comment._id, null, 'get', function(result){
-                    if(result.data.result == 'unvoted'){
+                    if(result.result == 'unvoted'){
                         comment.upvoted = false;
                         comment.downvoted = false;
                     }else{
                         comment.upvoted = true;
                         comment.downvoted = false;
                     }
-                    comment.points = result.data.updated.points;
+                    comment.points = result.updated.points;
                 });
             }
             $scope.downvoteComment = function(comment){
                 $scope.action("voteResult", "util", "downvoteComment", comment._id, null, 'get', function(result){
-                    if(result.data.result == 'unvoted'){
+                    if(result.result == 'unvoted'){
                         comment.upvoted = false;
                         comment.downvoted = false;
                     }else{
@@ -146,12 +146,12 @@ module.exports = {
                         comment.upvoted = false;
                         comment.downvoted = true;
                     }
-                    comment.points = result.data.updated.points;
+                    comment.points = result.updated.points;
                 });
             }
             $scope.upvotePost = function(post){
                 $scope.action("voteResult", "util", "upvotePost", post._id, null, 'get', function(result){
-                    if(result.data.result == "unvoted"){
+                    if(result.result == "unvoted"){
                         post.upvoted = false;
                         post.downvoted = false;
                     }else{
@@ -160,19 +160,19 @@ module.exports = {
                     }
                     console.log("RESULT:");
                     console.log(result);
-                    post.points = result.data.updated.points;
+                    post.points = result.updated.points;
                 });
             }
             $scope.downvotePost = function(post){
                 $scope.action("voteResult", "util", "downvotePost", post._id, null, 'get', function(result){
-                    if(result.data.result == 'unvoted'){
+                    if(result.result == 'unvoted'){
                         post.upvoted = false;
                         post.downvoted = false;
                     }else{
                         post.upvoted = false;
                         post.downvoted = true;
                     }
-                    post.points = result.data.updated.points;
+                    post.points = result.updated.points;
                 });
             }
 
