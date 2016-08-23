@@ -1,4 +1,13 @@
 <div class="row" style="margin-bottom:10px;">
+    <div class="col-lg-1 col-sm-1 col-md-1" style="width:125px; padding-top:11px; text-align: right;">
+        <div ng-click="sub.subscribed = !sub.subscribed" ng-style="{'background-color':sub.subscribed ? '#ab4347' : '#76aa4a'}" style="float:right; cursor:pointer; color:white; font-family: verdana, arial; font-size:10px; font-weight: bold; margin:4px; padding:3px 10px 3px 10px; border:1px solid rgb(68, 68, 68); border-radius: 3px;">
+            {{sub.subscribed ? 'unsubscribe' : 'subscribe'}}
+        </div>
+
+        <div ng-click="sub.shortcutted = !sub.shortcutted" ng-style="{'background-color':sub.shortcutted ? '#ab4347' : '#76aa4a'}" style="float:right; cursor:pointer; color:white;  font-family: verdana, arial; font-size:10px; font-weight: bold; margin:4px; padding:3px 10px 3px 10px; border:1px solid rgb(68, 68, 68); border-radius: 3px;">
+            {{sub.shortcutted ? '-' : '+'}}shortcut
+        </div>
+    </div>
     <div class="col-lg-1 col-sm-1 col-md-1" style="width:80px;">
         <img src="{{sub.image || '/img/logo.png'}}" style="width:70px; margin-top:5px;" />
     </div>
@@ -21,7 +30,7 @@
             <span ng-if="sub.__owner._id == $root._user._id">
                 <a style="color:rgb(136, 136, 136); cursor:pointer;" ng-click="delete(sub, subs)">delete</a>
                 &nbsp;
-                <a style="color:rgb(136, 136, 136); cursor:pointer;" href="/Posts/{{post._id}}/edit">edit</a>
+                <a style="color:rgb(136, 136, 136); cursor:pointer;" href="/Subs/{{sub._id}}/edit">edit</a>
             </span>
             ,&nbsp;
             <span style="font-weight:normal;">
