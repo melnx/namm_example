@@ -12,6 +12,16 @@ module.exports = {
         created: Date,
         updated: Date,
 
+        $access: {
+            user: {
+                list: 'all',
+                create: true,
+                get: 'all',
+                update: 'own',
+                delete: 'own'
+            },
+        },
+
         $init: function($scope, $http, $sce) {
             $scope.$on('$routeChangeSuccess', function() {
                 $scope.$parent.controllericon = "fa-file-text-o";
