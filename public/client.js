@@ -816,9 +816,9 @@
               FlashMsg: 'Successfully updated ' + modelName
             });
             if ($window.location.href.indexOf('/edit') >= 0) {
-              window.setTimeout(function() {
+              //window.setTimeout(function() {
                 $window.location.href = '/' + modelName + 's/';
-              }, 3000);
+              //}, 3000);
             }
             console.log(response.data);
             //$scope.list();
