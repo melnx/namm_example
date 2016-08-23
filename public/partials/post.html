@@ -24,6 +24,7 @@
                 <a style="color:rgb(51, 102, 153);" href="/Users/{{post.__owner._id}}">{{post.__owner.name}}</a>
                 <i class="fa fa-tag" style="color:lightblue; font-size:12px;"></i>
             </span>
+            <span ng-show="post._sub" style="color:rgb(136, 136, 136); cursor:pointer;">to <a href="/Subs/{{post._sub._id}}">{{post._sub.name}}</a></span>
         </div>
         <div style="font-size:10px; font-weight:bold; margin-top:4px;">
             <a style="color:rgb(136, 136, 136); cursor:pointer;" href="/Posts/{{post._id}}">{{post.commentCount || '0'}} comments</a>

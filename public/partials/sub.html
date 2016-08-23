@@ -1,0 +1,38 @@
+<div class="row" style="margin-bottom:10px;">
+    <div class="col-lg-1 col-sm-1 col-md-1" style="width:80px;">
+        <img src="{{sub.image || '/img/logo.png'}}" style="width:70px; margin-top:5px;" />
+    </div>
+    <div class="col-lg-9 col-sm-9 col-md-9">
+        <a style="font-size:16px; color:rgb(0,0,255); font-weight:normal;" href="/Subs/{{sub._id}}">
+            {{sub.name}}
+        </a>
+        <div class="clearfix"></div>
+        <div class="well" style="padding:2px; margin-bottom: 10px;">{{sub.description || 'no description available'}}</div>
+        <div style="font-size:10px; color:rgb(136, 136, 136);">
+
+        </div>
+        <div style="font-size:10px; font-weight:bold; margin-top:4px;">
+            <a style="color:rgb(136, 136, 136); cursor:pointer;" href="">{{sub.subscriberCount || '0'}} subscribers</a>
+            &nbsp;
+            <a style="color:rgb(136, 136, 136); cursor:pointer;">share</a>
+            &nbsp;
+            <!--a style="color:rgb(136, 136, 136); cursor:pointer;">[l+c]</a-->
+            &nbsp;
+            <span ng-if="sub.__owner._id == $root._user._id">
+                <a style="color:rgb(136, 136, 136); cursor:pointer;" ng-click="delete(sub, subs)">delete</a>
+                &nbsp;
+                <a style="color:rgb(136, 136, 136); cursor:pointer;" href="/Posts/{{post._id}}/edit">edit</a>
+            </span>
+            ,&nbsp;
+            <span style="font-weight:normal;">
+                community since {{sub.created | timeago}} created by
+                <span>
+                    <a style="color:rgb(51, 102, 153);" href="/Users/{{sub.__owner._id}}">{{sub.__owner.name}}</a>
+                    <i class="fa fa-tag" style="color:lightblue; font-size:12px;"></i>
+                </span>
+            </span>
+        </div>
+    </div>
+
+</div>
+<hr />

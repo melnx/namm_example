@@ -333,10 +333,11 @@
       // Helper function to load external data
       $scope.action = function(targetProperty, modelName, action, id, data, method, callback, callbackError, callbackParameters) {
         var url = getActionHttpParams(modelName, action, id, data, method);
-        console.log("Action: " + url);
+        console.log("Action: ");
+        console.log(url);
         $http(url).then(
           function(response) {
-            //console.log(response.data);
+            console.log(response.data);
             if (targetProperty) {
               setTargetProperty($scope, targetProperty, response.data);
             }

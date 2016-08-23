@@ -1,0 +1,9 @@
+<a class="btn btn-success" href="./new">Create a Sub</a>
+
+<hr />
+
+<div ng-init="list()">
+    <div ng-repeat="sub in items">
+        <div ng-include="'/partials/sub.html'"></div>
+    </div>
+</div>

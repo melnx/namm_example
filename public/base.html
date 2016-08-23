@@ -30,11 +30,11 @@
     <script src="/_models.js"></script>
 
   </head>
-  <body ng-controller="MainController" ng-init="action('theUser','User','get','0');">
+  <body ng-controller="MainController">
       <div class="container-fluid" style="margin-top: 1em; margin-bottom:3em;">
         <div class="row">
           <!-- LEFT COLUMN -->
-          <div class="col-xs-12 col-sm-3 col-lg-2" ng-if="theUser">
+          <div class="col-xs-12 col-sm-3 col-lg-2" ng-if="$root._user">
             <img src="/img/logo.png" style="width:55px; margin-bottom:4em;">
             <!--<div class="form-group" style="margin:3em 0;">
                 <div class="input-group">
@@ -44,7 +44,7 @@
                   </span>
                 </div>
               </div>-->
-            <ul class="nav nav-pills nav-stacked ng-cloak" ng-cloak ng-if="theUser">
+            <ul class="nav nav-pills nav-stacked ng-cloak" ng-cloak ng-if="$root._user">
               <!--li style='min-width: 175px;'>
                 <span style="padding:0 15px; text-transform: uppercase;">Menu</span>
               </li-->
@@ -71,12 +71,12 @@
               <div class="col-xs-12 col-sm-4">
                   <button aria-expanded="false" aria-haspopup="true" bs-dropdown class="btn btn-primary pull-right" data-animation="am-flip-x" data-placement="bottom-right" type="button">
                     <i class="fa fa-user"></i>&nbsp;
-                    <span ng-bind="theUser.fullName || 'Unknown User'"></span>&nbsp;
+                    <span ng-bind="$root._user.fullName || 'Unknown User'"></span>&nbsp;
                     <i class="fa fa-caret-down"></i>
                   </button>
                   <ul class="dropdown-menu dropdown-menu-right" role="menu">
                     <li>
-                      <a href="/Users/{{theUser._id}}">
+                      <a href="/Users/{{$root._user._id}}">
                         <i class="fa fa-gear"></i>
                         &nbsp;Settings
                       </a>
