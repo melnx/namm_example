@@ -150,12 +150,26 @@ function setupEndpoints(modelName, modelProperties) {
     return privateAccess == 'all' || privateAccess == "*" || (privateAccess && privateAccess.indexOf(action) >= 0);
   }
 
-  function cleanItem(item, hiddenProperties){
-      hiddenProperties.forEach(function(k){
-         item[k] = null;
+  function cleanItem(item, user, modelName, modelProperties, hiddenProperties, internalProperties){
+      var cleanHidden = true;
+      if(modelName == "User" && user._id.toString() == item._id.toString()){
+          cleanHidden = false;
+      }
+      if(user.role == "admin"){
+          cleanHidden = false;
+      }
+
+      if(cleanHidden){
+          hiddenProperties.forEach(function(k){
+             item[k] = null;
+          });
+      }
+
+      internalProperties.forEach(function(k){
+          item[k] = null;
       });
 
-      if(item.__owner){
+      if(item.__owner && item.__owner._id){
           item.__owner.password = null;
           item.__owner.email = null;
           item.__owner.phone = null;
@@ -163,23 +177,24 @@ function setupEndpoints(modelName, modelProperties) {
           item.__owner.username = null;
       }
   }
-  function cleanResult(req, result){
+  function cleanResult(req, result, modelName, modelProperties){
       var hiddenProperties = [];
+      var internalProperties = [];
       Object.keys(modelProperties).forEach(function(key){
-          if(modelProperties[key].$hidden && req.user.role != "admin"){
+          if(modelProperties[key].$hidden){
               hiddenProperties.push(key);
           }
           if(modelProperties[key].$internal){
-              hiddenProperties.push(key);
+              internalProperties.push(key);
           }
       });
 
       if(result instanceof Array){
           result.forEach(function(i){
-              cleanItem(i, hiddenProperties);
+              cleanItem(i, req.user, modelName, modelProperties, hiddenProperties, internalProperties);
           });
       }else{
-          cleanItem(result, hiddenProperties);
+          cleanItem(result, req.user, modelName, modelProperties, hiddenProperties, internalProperties);
       }
   }
 
@@ -343,7 +358,10 @@ function setupEndpoints(modelName, modelProperties) {
 
   function autoPopulate(query){
       Object.keys(modelProperties).forEach(function(i) {
-          if (modelProperties[i].ref) {
+          if(modelProperties[i][0] && modelProperties[i][0].ref){
+              if(debug){ console.log(modelName + " AUTO POPULATE ARRAY " + i); }
+              query.populate(i);
+          }else if (modelProperties[i].ref) {
               if(debug){ console.log(modelName + " AUTO POPULATE " + i); }
               query.populate(i);
           }
@@ -440,7 +458,7 @@ function setupEndpoints(modelName, modelProperties) {
 
                 //result.unshift({count:count});
 
-                cleanResult(req, result);
+                cleanResult(req, result, modelName, modelProperties);
 
                 if(_count){
                     computeCounts(result, _count, function(err, newResult){
@@ -471,7 +489,7 @@ function setupEndpoints(modelName, modelProperties) {
         }
 
         query.exec(function(err, result) {
-          cleanResult(req, result);
+          cleanResult(req, result, modelName, modelProperties);
 
           if(_count){
               computeCounts(result, _count, function(err, newResult){
@@ -562,7 +580,7 @@ function setupEndpoints(modelName, modelProperties) {
 
     query.exec(function(err, result) {
 
-      cleanResult(req, result);
+      cleanResult(req, result, modelName, modelProperties);
 
       res.send(result);
     });
@@ -591,18 +609,55 @@ function setupEndpoints(modelName, modelProperties) {
           if( modelProperties[key] ){
               if ( !privateAccess && modelProperties[key]['$private'] ) return;
               if ( modelProperties[key]['$internal'] ) return;
-              if ( modelProperties[key]['$hidden'] && req.user.role != "admin" ) return;
+              if ( modelProperties[key]['$hidden'] && result.__owner && (req.user._id.toString() != result.__owner.toString() || req.user.role != "admin") ) return;
+              if ( modelProperties[key]['$hidden'] && modelName == "User" && req.user._id.toString() != result._id.toString()) return;
 
               if ( modelProperties[key]['$immutable'] && result[key] ){
-                  if( (typeof req.body[key] == "string" && result[key] != req.body[key] ) ||
-                      (req.body[key] && result[key] != req.body[key]["_id"]) ){
-                      problems.push("not allowed to overwrite " + key + " with a new value once it's set"); return;
+                  if( typeof req.body[key] == "string" ){
+                      if(result[key] != req.body[key]){
+                          problems.push("not allowed to overwrite " + key + " with a new value once it's set " + result[key] + "->" + req.body[key]); return;
+                      }
+                  }else{
+                      if(req.body[key] && result[key] != req.body[key]["_id"]){
+                          problems.push("not allowed to overwrite " + key + " with a new reference once it's set " + result[key] + "->" + req.body[key]["_id"]); return;
+                      }
                   }
               }
           }
 
           //console.log("[" + key + "] " + result[key] + " = " + req.body[key]);
-          result[key] = req.body[key];
+          if(modelProperties[key]){
+              if(modelProperties[key][0] && modelProperties[key][0].ref){
+                  //console.log(key + ":REF COLLECTION");
+                  if(req.body[key]){
+                      if(req.body[key].length){
+                          var definedIds= [];
+                          req.body[key].forEach(function(item){
+                              if(item._id){
+                                  definedIds.push(item._id);
+                              }else{
+                                  definedIds.push(item);
+                              }
+                          });
+                          //console.log("NONEMPTY PLUCK", definedIds);
+                          result[key] = definedIds;
+                      }else{
+                          //console.log("EMPTY REF ARRAY");
+                          result[key] = [];
+                      }
+                  }
+              }else if(modelProperties[key].ref){
+                  //console.log(key + ":REF");
+                  if(typeof req.body[key] == "string"){
+                      result[key] = req.body[key];
+                  }else{
+                      result[key] = req.body[key]._id;
+                  }
+              }else{
+                  //console.log(key + ":VALUE");
+                  result[key] = req.body[key];
+              }
+          }
         });
 
         result['updated'] = new Date();
@@ -611,6 +666,8 @@ function setupEndpoints(modelName, modelProperties) {
             res.status(401).send(problems);
             return;
         }
+
+        //console.log(result);
 
         result.save(function(err) {
           if (err) {
@@ -905,41 +962,58 @@ function setupCustomEndpoints(){
 
 function setupSpecialEndpoints(){
     app.get('/_models.js', isAuthenticated, function(req, res) {
-        var js = "__models = {";
-        Object.keys(resources).forEach(function(modelName) {
-            js += "\n    " + modelName + " : { " ;
 
-            if(config.clientside_framework == "react"){
-                js += "nothing:null,";
-            }else{
-                js += "$init : ";
-
-                if (resources[modelName].$init) {
-                    js += resources[modelName].$init + ",";
-                } else {
-                    js += 'null,';
-                }
+        var User = mongoose.model('User');
+        var query = User.findById(req.user._id);
+        var modelName = 'User';
+        var modelProperties = resources[modelName];
+        Object.keys(modelProperties).forEach(function(i) {
+            if(modelProperties[i][0] && modelProperties[i][0].ref){
+                if(debug){ console.log(modelName + " AUTO POPULATE ARRAY " + i); }
+                query.populate(i);
+            }else if (modelProperties[i].ref) {
+                if(debug){ console.log(modelName + " AUTO POPULATE " + i); }
+                query.populate(i);
             }
-
-            js += "\n    },"
-
         });
 
-        js += "\n}"
+        query.exec(function(err, user){
+            var js = "__models = {";
+            Object.keys(resources).forEach(function(modelName) {
+                js += "\n    " + modelName + " : { " ;
 
-        if(shared){
-            js += "\n__shared = ";
-            js += JSON.stringify(shared);
-        }
+                if(config.clientside_framework == "react"){
+                    js += "nothing:null,";
+                }else{
+                    js += "$init : ";
 
-        if(req.user){
-            var clone = _.clone(req.user.toObject());
-            delete clone.password;
-            js += "\n__user = ";
-            js += JSON.stringify(clone);
-        }
+                    if (resources[modelName].$init) {
+                        js += resources[modelName].$init + ",";
+                    } else {
+                        js += 'null,';
+                    }
+                }
 
-        res.send(js);
+                js += "\n    },"
+
+            });
+
+            js += "\n}"
+
+            if(shared){
+                js += "\n__shared = ";
+                js += JSON.stringify(shared);
+            }
+
+            if(req.user){
+                var clone = _.clone(user.toObject());
+                delete clone.password;
+                js += "\n__user = ";
+                js += JSON.stringify(clone);
+            }
+
+            res.send(js);
+        });
     });
 
     app.get('/views/:entity/:view', isAuthenticated, function(req, res) {

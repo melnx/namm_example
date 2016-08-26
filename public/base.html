@@ -55,6 +55,12 @@
                 <a href="/Subs">Subs</a>
               </li>
 
+              <hr />
+
+              <li ng-repeat="sub in $root._user._shortcuts" data-match-route="/Subs/{{sub._id}}">
+                <a href="/Subs/{{sub._id}}">{{sub.name}}</a>
+              </li>
+
             </ul>
           </div>
           <div class="col-xs-12 visible-xs-block" style="height:0.5em;"></div>

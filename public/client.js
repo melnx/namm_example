@@ -345,7 +345,7 @@
           },
           function(err) {
             console.log(err);
-            callCallback($scope, callbackError, response, targetProperty, callbackParameters);
+            callCallback($scope, callbackError, err, targetProperty, callbackParameters);
           }
         );
       }

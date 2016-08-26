@@ -19,23 +19,25 @@ Schema = mongoose.Schema;
 function setupUserModel(userModel){
 
     var userProps = {
-        username: String,
+        username: {type: String, unique : true, $hidden:true, $immutable:true},
         password: {type: String, $internal:true},
-        email: {type: String, $hidden:true},
-        phone: String,
-        fullName: String,
-        role: String,
+        email: {type: String, $hidden:true, $immutable:true},
+        phone: {type: String, $hidden:true},
+        fullName: {type: String, $hidden:true},
+        role: {type: String, $internal:true},
         gravatarHash: String,
         profileImage: String,
-        resetPasswordToken: String,
-        resetPasswordExpires: Date,
+        resetPasswordToken: {type: String, $internal:true},
+        resetPasswordExpires: {type: Date, $internal:true},
         name: String,
-        disabled: Boolean,
+        disabled: {type: Boolean, $internal:true},
     };
 
     userModel.role = {
         type: String,
-        $private: true
+        $private: true,
+        $immutable: true,
+        //$internal: true,
     };
     Object.keys(userProps).forEach(function(property){
         if(!userModel[property]){

@@ -1,11 +1,11 @@
 <div class="row" style="margin-bottom:10px;">
     <div class="col-lg-1 col-sm-1 col-md-1" style="width:125px; padding-top:11px; text-align: right;">
-        <div ng-click="sub.subscribed = !sub.subscribed" ng-style="{'background-color':sub.subscribed ? '#ab4347' : '#76aa4a'}" style="float:right; cursor:pointer; color:white; font-family: verdana, arial; font-size:10px; font-weight: bold; margin:4px; padding:3px 10px 3px 10px; border:1px solid rgb(68, 68, 68); border-radius: 3px;">
-            {{sub.subscribed ? 'unsubscribe' : 'subscribe'}}
+        <div ng-click="toggleCollectionCotains($root._user._subs, sub, saveUser)" ng-style="{'background-color':collectionContainsObject($root._user._subs, sub) ? '#ab4347' : '#76aa4a'}" style="float:right; cursor:pointer; color:white; font-family: verdana, arial; font-size:10px; font-weight: bold; margin:4px; padding:3px 10px 3px 10px; border:1px solid rgb(68, 68, 68); border-radius: 3px;">
+            {{collectionContainsObject($root._user._subs, sub) ? 'unsubscribe' : 'subscribe'}}
         </div>
 
-        <div ng-click="sub.shortcutted = !sub.shortcutted" ng-style="{'background-color':sub.shortcutted ? '#ab4347' : '#76aa4a'}" style="float:right; cursor:pointer; color:white;  font-family: verdana, arial; font-size:10px; font-weight: bold; margin:4px; padding:3px 10px 3px 10px; border:1px solid rgb(68, 68, 68); border-radius: 3px;">
-            {{sub.shortcutted ? '-' : '+'}}shortcut
+        <div ng-click="toggleCollectionCotains($root._user._shortcuts, sub, saveUser)" ng-style="{'background-color':collectionContainsObject($root._user._shortcuts, sub) ? '#ab4347' : '#76aa4a'}" style="float:right; cursor:pointer; color:white;  font-family: verdana, arial; font-size:10px; font-weight: bold; margin:4px; padding:3px 10px 3px 10px; border:1px solid rgb(68, 68, 68); border-radius: 3px;">
+            {{collectionContainsObject($root._user._shortcuts, sub)  ? '-' : '+'}}shortcut
         </div>
     </div>
     <div class="col-lg-1 col-sm-1 col-md-1" style="width:80px;">

@@ -5,7 +5,7 @@ module.exports = {
     Main: {
         name: String,
 
-        $init: function($scope, $route, $routeParams, $location, $http, $alert, $interval, $window, $sce) {
+        $init: function($scope, $route, $routeParams, $location, $http, $alert, $interval, $window, $sce, $rootScope) {
             // Initialize Variables
             $scope.$route = $route;
             $scope.$location = $location;
@@ -26,6 +26,54 @@ module.exports = {
                 console.log("Alert triggered");
             });
 
+            $scope.saveUser = function(){
+                $scope.action(null, 'User', 'update', null, $rootScope._user, 'post');
+            }
+
+            $scope.collectionContainsObject = function(collection, item){
+                if(!item || !collection){
+                    return false;
+                }
+
+                var id = item._id;
+                var result = false;
+
+
+
+                collection.forEach(function(i){
+                    if(!i) return;
+                    if(i._id == id){
+                        result = true;
+                    }
+                })
+
+                return result;
+            }
+
+            $scope.toggleCollectionCotains = function(collection, item, cb){
+                if(!item || !collection){
+                    return false;
+                }
+                var id = item._id;
+                var found = null;
+
+                collection.forEach(function(i){
+                    if(!i) return;
+                    if(i._id == id){
+                        found = i;
+                    }
+                })
+
+                if(found){
+                    collection.splice(collection.indexOf(found), 1);
+                }else{
+                    collection.push(item);
+                }
+
+                if(cb){
+                    cb();
+                }
+            }
 
             $scope.getYoutubeUrl = function(url){
                 var video_id = url.split('v=')[1];
@@ -70,6 +118,14 @@ module.exports = {
                 }
             }
 
+            $scope.pluck = function(collection, property){
+                var result = [];
+                collection.forEach(function(item){
+                    result.push(item[property]);
+                })
+                return result;
+            }
+
             $scope.loadPosts = function(sub){
                 $scope.posts = [];
 
@@ -81,6 +137,12 @@ module.exports = {
 
                 if(sub){
                     query._sub = sub;
+                }else{
+                    query.$or = [
+                        {_sub:{$exists:false}},
+                        {_sub:null},
+                        {_sub:{$in:$scope.pluck($rootScope._user._subs, '_id')}}
+                    ]
                 }
 
                 $scope.action('posts', 'Post', 'list', null, query, 'get', function(){

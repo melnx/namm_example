@@ -28,7 +28,6 @@ module.exports = {
                 $scope.$parent.controllerheader = "Subs";
                 $scope.$parent.controllerdescription = "subs";
             });
-
         }
     }
 }
