@@ -254,7 +254,19 @@ function setupEndpoints(modelName, modelProperties) {
       if(debug){ console.log("COUNT MATCH: ", JSON.stringify(match)); }
 
       var aggregate = {$sum: 1};
-      var agg = [
+
+      var unwindAggregate = null;
+      if(typeof resources[modelName][groupByField]){
+          if(resources[modelName][groupByField][0] && resources[modelName][groupByField][0].ref){
+              unwindAggregate = [
+                  {$match: match },
+                  {$unwind: "$" + groupByField },
+                  {$group: { _id: "$" + groupByField, total: aggregate }}
+              ];
+          }
+      }
+
+      var agg = unwindAggregate || [
           {$match: match},
           {$group: {
               _id: "$" + groupByField,
@@ -405,7 +417,7 @@ function setupEndpoints(modelName, modelProperties) {
       if(key[0] == '$' && key != '$or') return;
 
       if(modelProperties[key] && modelProperties[key].ref){
-          console.log("attempting to create id: ", req.query[key]);
+          if(debug) console.log("attempting to create id: ", req.query[key]);
           q[key] = mongoose.Types.ObjectId(req.query[key]);
       }else{
 
@@ -486,6 +498,12 @@ function setupEndpoints(modelName, modelProperties) {
         if(req.query['$sort']){
             var sort = req.query['$sort'].length && req.query['$sort'][0] == '{' ? JSON.parse(req.query['$sort']) : req.query['$sort'];
             query.sort(sort);
+        }
+
+        if(req.query['$aggregate']){
+            prepareMongoQuery(req.query['$aggregate']);
+            console.log("AGGREGATE");
+            console.log(JSON.stringify(req.query['$aggregate']));
         }
 
         query.exec(function(err, result) {

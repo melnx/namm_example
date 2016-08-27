@@ -126,6 +126,14 @@ module.exports = {
                 return result;
             }
 
+
+            $scope.getDateTimeOffset = function(hourDifference, minuteDifference){
+                var date = new Date();
+                if(hourDifference) date.setHours( date.getHours() + hourDifference );
+                if(minuteDifference) date.setMinutes( date.getMinutes() + minuteDifference );
+                return date;
+            }
+
             $scope.loadPosts = function(sub){
                 $scope.posts = [];
 
@@ -142,7 +150,19 @@ module.exports = {
                         {_sub:{$exists:false}},
                         {_sub:null},
                         {_sub:{$in:$scope.pluck($rootScope._user._subs, '_id')}}
-                    ]
+                    ];
+                    query.$aggregate = [
+                        {
+                            $project: {
+                                difference: { $subtract: ["$a", "$b"] }
+                                // Add other keys in here as necessary
+                            }
+                        },
+                        {
+                            $sort: { difference: -1 }
+                        }
+                    ];
+                    query.created = {$gt: $scope.getDateTimeOffset(-24*14)};
                 }
 
                 $scope.action('posts', 'Post', 'list', null, query, 'get', function(){
