@@ -3,7 +3,7 @@ var Schema = mongoose.Schema;
 
 module.exports = {
     Sub: {
-        name: String,
+        name: {type: String, unique:true},
         description: String,
         url: String,
         image: String,
