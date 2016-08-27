@@ -35,7 +35,7 @@
             <a style="color:rgb(136, 136, 136); cursor:pointer;">[l+c]</a>
             &nbsp;
             <span ng-if="post.__owner._id == $root._user._id">
-                <a style="color:rgb(136, 136, 136); cursor:pointer;" ng-click="delete(post, posts)">delete</a>
+                <a style="color:rgb(136, 136, 136); cursor:pointer;" ng-click="delete(post, posts, false, 'Post')">delete</a>
                 &nbsp;
                 <a style="color:rgb(136, 136, 136); cursor:pointer;" href="/Posts/{{post._id}}/edit">edit</a>
             </span>

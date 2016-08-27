@@ -793,6 +793,7 @@ function setupEndpoints(modelName, modelProperties) {
         res.send('success');
       }
     });
+
   });
 
   //reduce()

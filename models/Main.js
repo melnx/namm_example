@@ -93,7 +93,14 @@ module.exports = {
                     item._sub = sub;
                 }
 
+                var lowerUrl = item.url ? item.url.toLowerCase() : '';
+
                 if(item.image && item.image.length){
+                    $scope.action('result', 'Post', 'create', null, item, 'post', function(){
+                        $window.location.href = sub ? '/Subs/' + sub : '/Posts/';
+                    });
+                }else if(lowerUrl.endsWith('.png') || lowerUrl.endsWith('.jpg') || lowerUrl.endsWith('.jpeg') || lowerUrl.endsWith('.gif') || lowerUrl.endsWith('.gifv')){
+                    item.image = item.url;
                     $scope.action('result', 'Post', 'create', null, item, 'post', function(){
                         $window.location.href = sub ? '/Subs/' + sub : '/Posts/';
                     });
