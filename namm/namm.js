@@ -1076,7 +1076,7 @@ function setupSpecialEndpoints(){
             if (exists) {
                 res.sendFile(path);
             } else {
-                path = staticPath + '/generic/' + view;
+                path = staticPath + '/partials/generic/' + view;
 
                 if(debug){ console.log('Loading Generic View: ' + path); }
                 res.sendFile(path);
@@ -1106,6 +1106,13 @@ function set_public(path){
 }
 exports.public = set_public;
 
+var viewPath = null;
+function set_views(path){
+    viewPath = path;
+    return exports;
+}
+exports.views = set_views;
+
 function init(models) {
   initAppIfNeeded();
 
@@ -1116,7 +1123,7 @@ function init(models) {
     app.use(favicon(faviconPath));
   }
   app.set('view engine', 'ejs');
-  app.set('views', __dirname + '/views');
+  app.set('views', viewPath);
 
    //console.log(mongoose.model('User').schema.tree);
   if(models){

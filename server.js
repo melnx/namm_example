@@ -7,5 +7,6 @@ require('./namm/namm')
   //.stripe(require('./namm/samples/stripeOptions'))
   //.share({plans: require('./namm/samples/stripeOptions').planData})
   .routes(__dirname + '/routes')
+  .views(__dirname + '/views')
   //.connectors('./connectors')
   .init();

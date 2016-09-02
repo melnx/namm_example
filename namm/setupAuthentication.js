@@ -6,6 +6,7 @@ var passwordHash = require('password-hash');
 var md5 = require('blueimp-md5');
 var flash = require('express-flash');
 var mongoose = require('mongoose');
+var config = null;
 
 Schema = mongoose.Schema;
 
@@ -54,15 +55,21 @@ function setupUserModel(userModel){
     mongoose.model('User', new Schema(userProps));
 }
 
-function setupAuthentication(app, config) {
+var mailgun = null;
+function initMailgunIfNeeded(){
+    if(mailgun == null){
+        var mg_api_key = config.mg_api_key;
+        var mg_domain = config.mg_domain;
+        mailgun = require('mailgun-js')({
+            apiKey: mg_api_key,
+            domain: mg_domain
+        });
+    }
+}
 
-  //var config = require('./config.js');
-  var mg_api_key = config.mg_api_key;
-  var mg_domain = config.mg_domain;
-  var mailgun = require('mailgun-js')({
-    apiKey: mg_api_key,
-    domain: mg_domain
-  });
+function setupAuthentication(app, conf) {
+  config = conf;
+
 
   var User = mongoose.model('User');
 
@@ -329,6 +336,8 @@ function setupAuthentication(app, config) {
             "http://" + req.headers.host + "/reset/" + token + "\n\n"
         };
 
+        initMailgunIfNeeded();
+
         mailgun.messages().send(reset_email, function(error, body) {
           console.log("Body:\n" + body.message + "\nErr:\n" + error + "\nUser:\n" + user.username);
           done(error, 'done');
@@ -395,6 +404,8 @@ function setupAuthentication(app, config) {
           subject: 'Your Banzai Password Has Been Reset',
           text: "Your Banzai password has been successfully reset."
         };
+
+        initMailgunIfNeeded();
 
         mailgun.messages().send(reset_email, function(error, body) {
           console.log("Body:\n" + body.message + "\nErr:\n" + error + "\nUser:\n" + user.username);
