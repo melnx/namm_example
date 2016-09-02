@@ -1,11 +1,11 @@
-var mongoose = require('mongoose'); var Schema = mongoose.Schema;
-var _ = require("underscore");
-
-var namm = require('./namm');
-
-namm.require("./models")
-  //.stripe(require('./stripeOptions'))
-  //.share({plans: require('./stripeOptions').planData})
-  .routes('./routes')
+require('./namm/namm')
+  .public(__dirname + '/public')
+  .layout(__dirname + '/public/base.html')
+  .favicon(__dirname + '/public/img/favicon.ico')
+  .models(__dirname + "/models")
+  .config(require('./config.js'))
+  //.stripe(require('./namm/samples/stripeOptions'))
+  //.share({plans: require('./namm/samples/stripeOptions').planData})
+  .routes(__dirname + '/routes')
   //.connectors('./connectors')
   .init();

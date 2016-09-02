@@ -1,7 +1,7 @@
 // Utilities
 var mongoose = require('mongoose');
 var express = require('express');
-var config = require('./config.js');
+var config = null;
 var path = require('path');
 var flash = require('express-flash');
 var bodyParser = require('body-parser');
@@ -87,14 +87,21 @@ var isAuthenticated = function(req, res, next) {
   res.redirect('/');
 }
 
+var layoutPath = null;
+function set_layout(path){
+    layoutPath = path;
+    return exports;
+}
+exports.layout = set_layout;
+
 function setupEndpoints(modelName, modelProperties) {
 
   var model = mongoose.model(modelName);
   this[modelName] = model;
 
   var index = function(req, res) {
-    var file = config.clientside_framework == "react" ? "base_react.html" : "base.html";
-    res.sendFile(path.join(__dirname, '/public/' + file));
+    //var file = config.clientside_framework == "react" ? "base_react.html" : "base.html";
+    res.sendFile(layoutPath); //path.join(__dirname, '/public/' + file)
   };
 
   function addAccessLimiterToQuery(q, modelProperties, req) {
@@ -933,15 +940,32 @@ function load_directory(path, target, nested){
     return exports;
 }
 
+function splitToObject(string, separator){
+    var result = {};
+
+    var parts = string.split(separator);
+
+    parts.forEach(function(p){
+        result[p] = true;
+    });
+
+    return result;
+}
+
 function require_routes(path){
     var raw_routes = {};
     load_directory(path, raw_routes);
     Object.keys(raw_routes).forEach(function(route){
-       var parts = route.split(' ');
-       var method = parts.length == 2 ? parts[0].toLowerCase() : "get";
-       var endpoint = parts[parts.length-1];
-       var route = {method:method, endpoint:endpoint, handler:raw_routes[route]};
-       routes.push(route)
+        var parts = route.split(' ');
+        var methodSpec = parts.length == 2 ? splitToObject(parts[0].toLowerCase(),'|') : null;
+        var method = methodSpec ? (methodSpec.get ? "get" : methodSpec.post ? "post" : "get") : "get";
+        var isPublic = methodSpec ? (methodSpec.public ? true : false) : false;
+        var endpoint = parts[parts.length-1];
+        var route = {method:method, endpoint:endpoint, handler:raw_routes[route]};
+        if(isPublic){
+            route.$public = true;
+        }
+        routes.push(route)
     });
     return exports;
 }
@@ -954,6 +978,7 @@ function require_path(path){
 }
 
 exports.require = require_path;
+exports.models = require_path;
 
 function require_connectors(path){
     load_directory(path, connectors, true);
@@ -1042,7 +1067,7 @@ function setupSpecialEndpoints(){
         var dir = config.clientside_framework == "react" ? "partials_react" : "partials";
 
 
-        var path = __dirname + '/public/' + dir +'/' + entity.toLowerCase() + "/" + view;
+        var path = staticPath + '/' + dir +'/' + entity.toLowerCase() + "/" + view;
 
         if(debug){ console.log('Loading View: ' + path); }
 
@@ -1051,7 +1076,7 @@ function setupSpecialEndpoints(){
             if (exists) {
                 res.sendFile(path);
             } else {
-                path = __dirname + '/public/' + dir + '/generic/' + view;
+                path = staticPath + '/generic/' + view;
 
                 if(debug){ console.log('Loading Generic View: ' + path); }
                 res.sendFile(path);
@@ -1066,13 +1091,30 @@ function stripe(options){
 }
 exports.stripe = stripe;
 
+
+var faviconPath = null;
+function set_favicon(path){
+    faviconPath = path;
+    return exports;
+}
+exports.favicon = set_favicon;
+
+var staticPath = null;
+function set_public(path){
+    staticPath = path;
+    return exports;
+}
+exports.public = set_public;
+
 function init(models) {
   initAppIfNeeded();
 
   app.use(flash());
   app.use(bodyParser.urlencoded({extended: true}));
   app.use(bodyParser.json());
-  app.use(favicon(__dirname + '/public/img/favicon.ico'));
+  if(faviconPath){
+    app.use(favicon(faviconPath));
+  }
   app.set('view engine', 'ejs');
   app.set('views', __dirname + '/views');
 
@@ -1090,7 +1132,7 @@ function init(models) {
   connectToDatabase();
 
   setupUserModel(resources.User);
-  setupAuthentication(app);
+  setupAuthentication(app, config);
 
   if(stripeOptions){
     var userSchema = mongoose.model('User');
@@ -1108,7 +1150,7 @@ function init(models) {
 
   setupCustomEndpoints();
 
-  app.use(express.static(__dirname + '/public/'));
+  app.use(express.static(staticPath));
 
   startServer(app);
 
@@ -1123,5 +1165,11 @@ function share(data){
 }
 
 exports.share = share;
+
+function conf(settings){
+    config = settings;
+    return exports;
+}
+exports.config = conf;
 
 module.exports = exports;

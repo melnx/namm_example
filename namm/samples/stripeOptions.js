@@ -7,22 +7,22 @@ module.exports = {
         'free': {
             name: 'Free',
             price: 0,
-            $limit: ['Campaign', 0]
+            $limit: [{'Post': 1}, {'Comment': 10}]
         },
         'silver': {
             name: 'Silver',
             price: 9,
-            $limit: ['Campaign', 10]
+            $limit: [{'Post': 10}, {'Comment': 25}]
         },
         'gold': {
             name: 'Gold',
             price: 19,
-            $limit: ['Campaign', 20]
+            $limit: [{'Post': 20}, {'Comment': 50}]
         },
         'platinum': {
             name: 'Platinum',
             price: 29,
-            $limit: ['Campaign', 30]
+            $limit: [{'Post': 30}, {'Comment': 100}]
         }
     }
 };

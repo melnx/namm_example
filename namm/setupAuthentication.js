@@ -1,12 +1,5 @@
 //For Reset Password
 var async = require('async');
-var config = require('./config.js');
-var mg_api_key = config.mg_api_key;
-var mg_domain = config.mg_domain;
-var mailgun = require('mailgun-js')({
-  apiKey: mg_api_key,
-  domain: mg_domain
-});
 var crypto = require('crypto');
 var _ = require('underscore');
 var passwordHash = require('password-hash');
@@ -16,7 +9,11 @@ var mongoose = require('mongoose');
 
 Schema = mongoose.Schema;
 
+var homePages = null;
+
 function setupUserModel(userModel){
+
+    homePages = userModel.$home;
 
     var userProps = {
         username: {type: String, unique : true, $hidden:true, $immutable:true},
@@ -57,7 +54,16 @@ function setupUserModel(userModel){
     mongoose.model('User', new Schema(userProps));
 }
 
-function setupAuthentication(app) {
+function setupAuthentication(app, config) {
+
+  //var config = require('./config.js');
+  var mg_api_key = config.mg_api_key;
+  var mg_domain = config.mg_domain;
+  var mailgun = require('mailgun-js')({
+    apiKey: mg_api_key,
+    domain: mg_domain
+  });
+
   var User = mongoose.model('User');
 
   var passport = require('passport');
@@ -150,7 +156,7 @@ function setupAuthentication(app) {
       //console.log(req);
       //console.log(username);
       //console.log(password);
-      findOrCreateUser = function() {
+      var findOrCreateUser = function() {
         // find a user in Mongo with provided username
         console.log('SIGNUP: (attempt)');
 
@@ -239,7 +245,8 @@ function setupAuthentication(app) {
         req.logIn(user, function(err) {
             if (err) { return next(err); }
             // Redirect if it succeeds
-            var redirectPath = "/Posts"; // user.role == "agent" ? "/Tasks" : "/Campaigns";
+
+            var redirectPath = homePages ? homePages[user.role || "user"] : "/";
             return res.redirect(redirectPath);
         });
     })(req, res, next);
@@ -259,11 +266,25 @@ function setupAuthentication(app) {
   });
 
   /* Handle Registration POST */
-  app.post('/signup', passport.authenticate('signup', {
+  /*app.post('/signup', passport.authenticate('signup', {
     successRedirect: '/Posts',
     failureRedirect: '/signup',
     failureFlash: true
-  }));
+  }));*/
+  app.post('/signup', function(req, res, next) {
+    passport.authenticate('signup', function(err, user, info) {
+        if (err) { return next(err); }
+        // Redirect if it fails
+        if (!user) { return res.redirect('/signup'); }
+        req.logIn(user, function(err) {
+            if (err) { return next(err); }
+            // Redirect if it succeeds
+
+            var redirectPath = homePages ? homePages[user.role || "user"] : "/";
+            return res.redirect(redirectPath);
+        });
+    })(req, res, next);
+  });
 
   app.get('/forgot', function(req, res) {
     res.render('forgot', {

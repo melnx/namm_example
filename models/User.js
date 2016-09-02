@@ -3,6 +3,10 @@ var Schema = mongoose.Schema;
 
 module.exports = {
     User: {
+        $home: {
+            "user": "/Posts"
+        },
+
         _subs: [{
             type: Schema.Types.ObjectId,
             ref: 'Sub'
