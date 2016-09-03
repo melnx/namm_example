@@ -50,7 +50,7 @@ module.exports = {
                 return result;
             }
 
-            $scope.toggleCollectionCotains = function(collection, item, cb){
+            $scope.toggleCollectionContains = function(collection, item, cb){
                 if(!item || !collection){
                     return false;
                 }
