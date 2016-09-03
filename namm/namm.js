@@ -1004,6 +1004,13 @@ function setupCustomEndpoints(){
     });
 }
 
+var partialsPath = null;
+function set_partials(path){
+    partialsPath = path;
+    return exports;
+}
+exports.partials = set_partials;
+
 function setupSpecialEndpoints(){
     app.get('/_models.js', isAuthenticated, function(req, res) {
 
@@ -1067,7 +1074,7 @@ function setupSpecialEndpoints(){
         var dir = config.clientside_framework == "react" ? "partials_react" : "partials";
 
 
-        var path = staticPath + '/' + dir +'/' + entity.toLowerCase() + "/" + view;
+        var path = (partialsPath ? partialsPath : staticPath + '/' + dir) + '/' + entity.toLowerCase() + "/" + view;
 
         if(debug){ console.log('Loading View: ' + path); }
 
@@ -1076,7 +1083,7 @@ function setupSpecialEndpoints(){
             if (exists) {
                 res.sendFile(path);
             } else {
-                path = staticPath + '/partials/generic/' + view;
+                path = __dirname + '/partials/generic/' + view;
 
                 if(debug){ console.log('Loading Generic View: ' + path); }
                 res.sendFile(path);

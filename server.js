@@ -1,6 +1,7 @@
 require('./namm/namm')
   .public(__dirname + '/public')
   .layout(__dirname + '/public/base.html')
+  .partials(__dirname + '/public/partials')
   .favicon(__dirname + '/public/img/favicon.ico')
   .models(__dirname + "/models")
   .config(require('./config.js'))
