@@ -10,6 +10,8 @@ var fs = require('fs');
 var util = require('util');
 var async = require("async");
 var favicon = require("serve-favicon");
+var colors = require('colors');
+var http = require('http');
 
 // Subsystems
 var authUtil = require('./setupAuthentication');
@@ -22,6 +24,7 @@ var app = null;
 var resources = [];
 var routes = [];
 var connectors = [];
+var connections = [];
 var debug = true;
 var shared = null;
 
@@ -864,17 +867,20 @@ function setupEndpoints(modelName, modelProperties) {
   });
 }
 
-function startServer(app) {
+function startServer(app, server) {
 
   var http_port = process.env.PORT || config.port;
 
-  var server = app.listen(http_port, function() {
+  /*var server = app.listen(http_port, function() {
     var host = server.address().address;
     var port = server.address().port;
 
     console.log('Banzai app listening at http://%s:%s', host, port);
-  });
+  });*/
+
+  server.listen(http_port);
 }
+
 
 function setupModels(){
     Object.keys(resources).forEach(function(modelName) {
@@ -1012,6 +1018,14 @@ function set_partials(path){
 exports.partials = set_partials;
 
 function setupSpecialEndpoints(){
+    app.get('/client.js', isAuthenticated, function(req,res){
+        res.sendFile( __dirname + '/public/client.js');
+    });
+
+    app.get('/sockjs.js', isAuthenticated, function(req,res){
+        res.sendFile( __dirname + '/public/sockjs.js');
+    });
+
     app.get('/_models.js', isAuthenticated, function(req, res) {
 
         var User = mongoose.model('User');
@@ -1120,6 +1134,83 @@ function set_views(path){
 }
 exports.views = set_views;
 
+function setupSockets(server){
+    var sockjs = require('sockjs');
+    var chat = sockjs.createServer();
+
+    chat.on('connection', function(conn) {
+        connections.push(conn);
+        var number = connections.length;
+        var userId = null;
+        var userName = null;
+        console.log('USER CONNECTED: ' + number);
+        conn.write(JSON.stringify({youruserid: number, text:"Welcome, User " + number}));
+
+        conn.on('data', function(message) {
+            var msg = _.extend({_user: number}, JSON.parse(message));
+
+            console.log("USER " + number + ":");
+            console.log(msg);
+
+            if(msg.associateIds){
+                msg.message = "USER CONNECTED: " + msg.userId + " (" + msg.name + ")" ;
+                msg.connect = true;
+                msg._user = number;
+                msg.userId = msg.userId;
+                msg.name = msg.name;
+                msg.userName = "[SYSTEM]";
+
+                console.log( ('user associated: ' + msg.userIndex + ' -> ' + msg.userId).green );
+                userId = msg.userId;
+                userName = msg.name;
+                conn.userId = userId;
+
+                var User =  mongoose.model('User');
+                User.findOneAndUpdate({ _id: userId }, { $set: { status: 'available', statusUpdated: new Date() }}, {new:true}).exec(function(err, res){
+                    console.log(err || ("user status updated (" + res.status + ")").yellow);
+                });
+            }
+
+            if(msg.message){
+                var sendToAll = !msg._target || !msg._target.length || msg._target == '*';
+
+                for (var ii=0; ii < connections.length; ii++) {
+                    if(sendToAll || msg._user == (ii+1) || msg._target == (ii+1).toString()){
+                        connections[ii].write(JSON.stringify(msg));
+                    }
+                }
+            }
+        });
+
+        conn.on('close', function() {
+            var userHasOpenConnections = false;
+            conn.closed = true;
+            connections.forEach(function(c){
+                //console.log(c);
+                if(c.userId == userId && !c.closed){
+                    userHasOpenConnections = true;
+                }
+            });
+
+            if(!userHasOpenConnections){
+                console.log( ("USER DCED: " + number + " (" + userId + ")").red );
+
+                if(userId){
+                    var User =  mongoose.model('User');
+                    User.findOneAndUpdate({ _id: userId }, { $set: { status: 'offline', statusUpdated: new Date() }}, {new:true}).exec(function(err, res){
+                        console.log(err || ("user status updated (" + res.status + ")").yellow);
+                    });
+                }
+
+            }
+            for (var ii=0; ii < connections.length; ii++) {
+                connections[ii].write(JSON.stringify({_user: number, disconnect:true, text:"User " + number + " has disconnected", message:"User " + userName + " has disconnected"}));
+            }
+        });
+    });
+    chat.installHandlers(server, {prefix:'/activity'});
+}
+
 function init(models) {
   initAppIfNeeded();
 
@@ -1166,7 +1257,12 @@ function init(models) {
 
   app.use(express.static(staticPath));
 
-  startServer(app);
+  var server = http.createServer(app);
+  exports.server = server;
+
+  setupSockets(server);
+
+  startServer(app, server);
 
   return exports;
 }

@@ -29,6 +29,9 @@ function setupUserModel(userModel){
         resetPasswordExpires: {type: Date, $internal:true},
         name: String,
         disabled: {type: Boolean, $internal:true},
+
+        status: String,
+        statusUpdated: Date,
     };
 
     userModel.role = {

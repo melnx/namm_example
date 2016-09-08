@@ -361,6 +361,96 @@
           this.$apply(fn);
         }
       }
+
+      var socks = {};
+      var network_users = {};
+      $scope.chat_log = [];
+
+      $scope.sendChatMessage = function(text, endpoint){
+          if(!endpoint){
+              endpoint = '/activity';
+          }
+          var sock = socks[endpoint];
+          var message = {
+              message: text,
+              userName: __user.name
+          }
+          console.log(message);
+          sock.send(JSON.stringify(message));
+      }
+
+      $scope.connectToSocket = function(endpoint){
+            if(typeof SockJS === "undefined"){
+                console.log("CANNOT SETUP socket connection PLEASE ADD sockjs.js <script> TO <head>");
+                return;
+            }
+            if(!endpoint){
+                endpoint = '/activity';
+            }
+            var sock = socks[endpoint];
+            if(!sock){
+                socks[endpoint] = sock = new SockJS(endpoint);
+            }
+            sock.onmessage = function(e) {
+                if(e.type == "message"){
+                    var parsed = JSON.parse(e.data);
+                    for(var key in parsed){
+                        e[key] = parsed[key];
+                    }
+                    delete e.data;
+                    delete e.type;
+
+                    //console.log("RAW SOCKET MESSAGE");
+                    //console.log(e);
+
+                    if(e.message){
+                        var msg = {_user: e._user, userId: e.userId, userName: e.userName, message: e.message};
+                        console.log("CHAT MESSAGE");
+                        console.log(msg);
+                        $scope.chat_log.push(msg);
+
+                        $scope.safeApply(function(){
+                            $scope.chat_message = msg;
+                        })
+                    }
+
+                    if(e.youruserid && !e.message){
+                        var userid = e.youruserid;
+                        console.log("Your user Index: " + userid);
+                        var message = {
+                            associateIds: true,
+                            userIndex: userid,
+                            name: __user.name,
+                            userId: __user._id
+                        }
+                        console.log(message);
+                        sock.send(JSON.stringify(message));
+                    }
+
+                    if(e._user){
+                        if(e.disconnect){
+                            console.log('DISCONNECTED NETWORK USER: ' + e._user);
+                            delete network_users[e._user];
+                        }else if(e.connect){
+                            console.log('CONNECTED NETWORK USER: ' + e._user);
+                            network_users[e._user] = e;
+                        }
+                    }
+                    e.__qt = 1;
+                }else{
+                    alert("unknown message type");
+                }
+            };
+        }
+
+        $scope.updateStatus = function(status){
+            var user = $rootScope._user;
+            user.status = status;
+            user.statusUpdated = new Date();
+            $scope.action(null, "User", "update", null, user, "post", function(user){
+                console.log("Updated status to: " + user.status);
+            });
+        }
     }
 
     initDefaultControllers(models);

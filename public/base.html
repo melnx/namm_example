@@ -29,6 +29,8 @@
     </script-->
     <script src="/_models.js"></script>
 
+    <script type="text/javascript" src="/sockjs.js"></script>
+
   </head>
   <body ng-controller="MainController">
       <div class="container-fluid" style="margin-top: 1em; margin-bottom:3em;">
@@ -44,7 +46,7 @@
                   </span>
                 </div>
               </div>-->
-            <ul class="nav nav-pills nav-stacked ng-cloak" ng-cloak ng-if="$root._user">
+            <ul class="nav nav-pills nav-stacked ng-cloak" ng-cloak ng-if="$root._user" ng-init="connectToSocket()">
               <!--li style='min-width: 175px;'>
                 <span style="padding:0 15px; text-transform: uppercase;">Menu</span>
               </li-->
@@ -60,6 +62,16 @@
               <li ng-repeat="sub in $root._user._shortcuts" data-match-route="/Subs/{{sub._id}}">
                 <a href="/Subs/{{sub._id}}">{{sub.name}}</a>
               </li>
+
+              <div style="margin:15px; font-size:10px;">
+                <div style="max-height: 300px; overflow-y: auto;">
+                    <div ng-repeat="msg in chat_log"><strong>{{msg.userName}}</strong>: {{msg.message}}</div>
+                </div>
+                <form ng-submit="sendChatMessage(chatMessage); chatMessage=''">
+                    <input type="text" ng-model="chatMessage" style="width:140px;" />
+                    <input type="submit" value="send" />
+                </form>
+              </div>
 
             </ul>
           </div>
