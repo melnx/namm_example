@@ -1026,6 +1026,8 @@ function setupSpecialEndpoints(){
         res.sendFile( __dirname + '/public/sockjs.js');
     });
 
+    var _modelsjs = null;
+
     app.get('/_models.js', isAuthenticated, function(req, res) {
 
         var User = mongoose.model('User');
@@ -1043,8 +1045,13 @@ function setupSpecialEndpoints(){
         });
 
         query.exec(function(err, user){
-            var js = "__models = {";
-            Object.keys(resources).forEach(function(modelName) {
+            var js = null;
+
+            if(_modelsjs){
+              js = _modelsjs;
+            }else{
+              js =  "__models = {";
+              Object.keys(resources).forEach(function(modelName) {
                 js += "\n    " + modelName + " : { " ;
 
                 if(config.clientside_framework == "react"){
@@ -1061,13 +1068,16 @@ function setupSpecialEndpoints(){
 
                 js += "\n    },"
 
-            });
+              });
 
-            js += "\n}"
+              js += "\n}"
 
-            if(shared){
+              if(shared){
                 js += "\n__shared = ";
                 js += JSON.stringify(shared);
+              }
+
+              _modelsjs = js;
             }
 
             if(req.user){
