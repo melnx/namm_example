@@ -1028,7 +1028,7 @@ function setupSpecialEndpoints(){
 
     var _modelsjs = null;
 
-    app.get('/_models.js', isAuthenticated, function(req, res) {
+    app.get('/_models', isAuthenticated, function(req, res) {
 
         var User = mongoose.model('User');
         var query = User.findById(req.user._id);
