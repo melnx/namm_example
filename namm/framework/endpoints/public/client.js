@@ -373,7 +373,8 @@
           var sock = socks[endpoint];
           var message = {
               message: text,
-              userName: __user.name
+              userName: __user.name,
+              userId: __user._id,
           }
           console.log(message);
           sock.send(JSON.stringify(message));

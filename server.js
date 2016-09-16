@@ -1,4 +1,4 @@
-require('./namm/namm')
+require('./namm/namm2')
   .public(__dirname + '/public')
   .layout(__dirname + '/public/base.html')
   .partials(__dirname + '/public/partials')
@@ -9,5 +9,6 @@ require('./namm/namm')
   //.share({plans: require('./namm/samples/stripeOptions').planData})
   .routes(__dirname + '/routes')
   .views(__dirname + '/views')
+  .sockets()
   //.connectors('./connectors')
   .init();

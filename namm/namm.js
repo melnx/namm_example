@@ -107,6 +107,13 @@ function setupEndpoints(modelName, modelProperties) {
     res.sendFile(layoutPath); //path.join(__dirname, '/public/' + file)
   };
 
+  //view routes
+  app.get('/' + modelName, isAuthenticated, index);
+  app.get('/' + modelName + 's', isAuthenticated, index);
+  app.get('/' + modelName + 's/:id', isAuthenticated, index);
+  app.get('/' + modelName + 's/:id/:action', isAuthenticated, index);
+
+
   function addAccessLimiterToQuery(q, modelProperties, req) {
     if (modelName == 'User') {
       q._id = req.user._id;
@@ -118,11 +125,6 @@ function setupEndpoints(modelName, modelProperties) {
     }
   }
 
-  //view routes
-  app.get('/' + modelName, isAuthenticated, index);
-  app.get('/' + modelName + 's', isAuthenticated, index);
-  app.get('/' + modelName + 's/:id', isAuthenticated, index);
-  app.get('/' + modelName + 's/:id/:action', isAuthenticated, index);
 
   //data route access determination
   function getRoleAccess(req, action) {
@@ -247,6 +249,29 @@ function setupEndpoints(modelName, modelProperties) {
   }
 
 
+  function mongoResultsToObjects(result){
+      var newResult = [];
+
+      result.forEach(function(item){
+          var newItem = item.toObject();
+          newResult.push(newItem);
+      });
+
+      return newResult;
+  }
+
+  function arrayContains(array, item){
+      var result = false;
+      array.forEach(function(i){
+          if(i.toString() == item.toString()){
+              result = true;
+          }
+      });
+      return result;
+  }
+
+
+
   function getCounts(modelName, groupByField, q, callback, ids){
 
       var model = mongoose.model(modelName);
@@ -291,27 +316,6 @@ function setupEndpoints(modelName, modelProperties) {
           //console.log(result);
       });
 
-  }
-
-  function mongoResultsToObjects(result){
-      var newResult = [];
-
-      result.forEach(function(item){
-          var newItem = item.toObject();
-          newResult.push(newItem);
-      });
-
-      return newResult;
-  }
-
-  function arrayContains(array, item){
-      var result = false;
-      array.forEach(function(i){
-          if(i.toString() == item.toString()){
-              result = true;
-          }
-      });
-      return result;
   }
 
   function hydrateCounts(result, $count, counts){
@@ -897,6 +901,7 @@ function setupModelsEndpoints(){
 function initAppIfNeeded(){
     if(!app){
         app = express();
+        exports.app = app;
     }
 }
 
@@ -990,6 +995,7 @@ function require_connectors(path){
     load_directory(path, connectors, true);
     console.log("CONNECTORS");
     console.log(connectors);
+    exports.connectorList = connectors;
     return exports;
 }
 
@@ -1013,6 +1019,7 @@ function setupCustomEndpoints(){
 var partialsPath = null;
 function set_partials(path){
     partialsPath = path;
+    exports.partialsPath = path;
     return exports;
 }
 exports.partials = set_partials;
@@ -1118,6 +1125,7 @@ function setupSpecialEndpoints(){
 
 function stripe(options){
     stripeOptions = options;
+    exports.stripeOptions = options;
     return exports;
 }
 exports.stripe = stripe;
@@ -1126,6 +1134,7 @@ exports.stripe = stripe;
 var faviconPath = null;
 function set_favicon(path){
     faviconPath = path;
+    exports.faviconPath = path;
     return exports;
 }
 exports.favicon = set_favicon;
@@ -1133,6 +1142,7 @@ exports.favicon = set_favicon;
 var staticPath = null;
 function set_public(path){
     staticPath = path;
+    exports.staticPath = path;
     return exports;
 }
 exports.public = set_public;
@@ -1140,6 +1150,7 @@ exports.public = set_public;
 var viewPath = null;
 function set_views(path){
     viewPath = path;
+    exports.viewPath = path;
     return exports;
 }
 exports.views = set_views;
@@ -1281,6 +1292,7 @@ exports.init = init;
 
 function share(data){
     shared = data;
+    exports.shared = shared;
     return exports;
 }
 
@@ -1288,6 +1300,7 @@ exports.share = share;
 
 function conf(settings){
     config = settings;
+    exports.configuration = config;
     return exports;
 }
 exports.config = conf;
