@@ -18,7 +18,6 @@ var authUtil = require('./framework/auth/setupAuthentication');
 var setupAuthentication = authUtil.setupAuthentication;
 var setupUserModel = authUtil.setupUserModel;
 
-
 Schema = mongoose.Schema;
 var exports = {};
 var app = null;
@@ -32,6 +31,7 @@ exports.debug = debug;
 exports.resources = resources;
 exports.socketConnections = connections;
 exports.routeList = routes;
+exports.connectorList = connectors;
 
 require("./framework/util/util")();
 require("./framework/database/setup")(exports);

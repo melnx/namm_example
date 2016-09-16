@@ -2,6 +2,7 @@ module.exports = function(exports){
 
     var routes = exports.routeList;
     var resources = exports.resources;
+    var connectors = exports.connectorList;
     require("../util/util")();
 
     function route(method, endpoint, handler, $public){
@@ -50,64 +51,47 @@ module.exports = function(exports){
         return exports;
     }
 
-    var partialsPath = null;
     exports.partials = function set_partials(path){
-        partialsPath = path;
         exports.partialsPath = path;
         return exports;
     }
 
-    var stripeOptions = null;
     exports.stripe = function stripe(options){
-        stripeOptions = options;
         exports.stripeOptions = options;
         return exports;
     }
 
-    var faviconPath = null;
     exports.favicon = function set_favicon(path){
-        faviconPath = path;
         exports.faviconPath = path;
         return exports;
     }
 
-    var staticPath = null;
     exports.public = function set_public(path){
-        staticPath = path;
         exports.staticPath = path;
         return exports;
     }
 
-    var viewPath = null;
     exports.views = function set_views(path){
-        viewPath = path;
         exports.viewPath = path;
         return exports;
     }
 
-    var layoutPath = null;
     exports.layout = function set_layout(path){
-        layoutPath = path;
         exports.layoutPath = path;
         return exports;
     }
 
-    var shared = null;
     exports.share = function share(data){
-        shared = data;
-        exports.shared = shared;
+        exports.shared = data;
         return exports;
     }
 
     exports.config = function conf(settings){
-        config = settings;
-        exports.configuration = config;
+        exports.configuration = settings;
         return exports;
     }
 
-    var useSockets = false;
     exports.sockets = function use_sockets(){
-        useSockets = true;
         exports.useSockets = true;
         return exports;
     }
