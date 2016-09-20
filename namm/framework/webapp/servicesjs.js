@@ -12,8 +12,7 @@ module.exports = function(namm){
         _servicesjs = "__services = {\n";
         for(var servicePath in services){
             var service = services[servicePath];
-            //console.log(Object.keys(service));
-            //_servicesjs += "hi";
+
             for(var serviceName in service){
                 if(serviceName == "$path") continue;
                 _servicesjs += serviceName + " : " + service[serviceName].toString() + ",\n";
