@@ -9,7 +9,7 @@
 <div class="clearfix"></div>
 <hr />
 
-<div ng-init="loadPosts(_id)" style="margin-top:20px;">
+<div ng-init="PostUtil.loadPosts(_id).then(setPosts)" style="margin-top:20px;">
     <div ng-repeat="post in posts | orderBy:'-points'" ng-include="'/partials/post.html'">
     </div>
 </div>

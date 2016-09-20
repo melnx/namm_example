@@ -3,6 +3,7 @@ module.exports = function(exports){
     var routes = exports.routeList;
     var resources = exports.resources;
     var connectors = exports.connectorList;
+    var services = exports.serviceList;
     require("../util/util")();
 
     function route(method, endpoint, handler, $public){
@@ -40,14 +41,22 @@ module.exports = function(exports){
 
     exports.require = exports.models = function require_path(path){
         load_directory(path, resources);
+        exports.modelsPath = path;
+        return exports;
+    }
+
+    exports.services = function require_services(path){
+        load_directory(path, services, true);
+        console.log("SERVICES", services);
+        exports.servicesPath = path;
         return exports;
     }
 
     exports.connectors = function require_connectors(path){
         load_directory(path, connectors, true);
-        console.log("CONNECTORS");
-        console.log(connectors);
+        console.log("CONNECTORS", connectors);
         exports.connectorList = connectors;
+        exports.connectorsPath = path;
         return exports;
     }
 

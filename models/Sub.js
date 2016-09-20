@@ -28,6 +28,51 @@ module.exports = {
                 $scope.$parent.controllerheader = "Subs";
                 $scope.$parent.controllerdescription = "subs";
             });
+
+            $scope.collectionContainsObject = function(collection, item){
+                if(!item || !collection){
+                    return false;
+                }
+
+                var id = item._id;
+                var result = false;
+
+
+
+                collection.forEach(function(i){
+                    if(!i) return;
+                    if(i._id == id){
+                        result = true;
+                    }
+                })
+
+                return result;
+            }
+
+            $scope.toggleCollectionContains = function(collection, item, cb){
+                if(!item || !collection){
+                    return false;
+                }
+                var id = item._id;
+                var found = null;
+
+                collection.forEach(function(i){
+                    if(!i) return;
+                    if(i._id == id){
+                        found = i;
+                    }
+                })
+
+                if(found){
+                    collection.splice(collection.indexOf(found), 1);
+                }else{
+                    collection.push(item);
+                }
+
+                if(cb){
+                    cb();
+                }
+            }
         }
     }
 }

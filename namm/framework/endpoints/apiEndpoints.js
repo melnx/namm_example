@@ -28,8 +28,17 @@ module.exports = function(namm){
         app.get('/' + modelName + '/reduce', isAuthenticated, require('../api/reduce')(modelName, namm));
     }
 
+    this.setupModelRestApiEndpoints = function setupModelRestApiEndpoints(modelName){
+        var app = namm.app;
+        app.get('/api/1.0/' + modelName + '/', isAuthenticated, require('../api/list')(modelName, namm));
+        app.get('/api/1.0/' + modelName + '/:id', isAuthenticated, require('../api/get')(modelName, namm));
+        app.put('/api/1.0/' + modelName + '/:id', isAuthenticated, require('../api/update')(modelName, namm));
+        app.post('/api/1.0/' + modelName + "/", isAuthenticated, require('../api/create')(modelName, namm));
+        app.delete('/api/1.0/' + modelName + "/:id", isAuthenticated, require('../api/delete')(modelName, namm));
+    }
 
     return {
-        setupModelApiEndpoints: setupModelApiEndpoints
+        setupModelApiEndpoints: setupModelApiEndpoints,
+        setupModelRestApiEndpoints: setupModelRestApiEndpoints
     }
 }

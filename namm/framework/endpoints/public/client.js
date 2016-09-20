@@ -301,6 +301,13 @@
       }
     });
 
+    if(typeof __services !== 'undefined' && __services){
+        for(var serviceName in __services){
+            console.log("SERVICE: " , serviceName);
+            app.service(serviceName, __services[serviceName] );
+        }
+    }
+
     function mainControllerInit($scope, $route, $routeParams, $location, $http, $alert, $rootScope) {
       //////////////////////
       // Global Utilities //
@@ -348,6 +355,10 @@
             callCallback($scope, callbackError, err, targetProperty, callbackParameters);
           }
         );
+      }
+
+      $scope.saveUser = function(){
+          $scope.action(null, 'User', 'update', null, $rootScope._user, 'post');
       }
 
       // Helper function to fix blocking $apply

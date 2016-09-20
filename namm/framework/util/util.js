@@ -22,6 +22,7 @@ module.exports = function(){
         }
 
         console.log( path + ":", Object.keys(target));
+        //console.log( target );
 
         return exports;
     }

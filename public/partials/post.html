@@ -1,9 +1,9 @@
 <div class="row" style="margin-bottom:10px;">
     <div class="col-lg-1 col-sm-1 col-md-1" style="font-size:16px; color:rgb(198, 198, 198); font-family:arial; width:35px; padding-top:16px;">{{$index+1}}</div>
     <div class="col-lg-1 col-sm-1 col-md-1" style="font-size:13px; color:rgb(198, 198, 198); font-family:arial verdana; width:30px; padding:0px;">
-        <i class="fa fa-arrow-up hand" title="upvote" ng-click="upvotePost(post)" style="text-align:center; width:30px; display:inline-block" ng-style="{color: !post.upvoted ? 'rgb(183, 183, 183)' : 'rgb(255, 139, 96)'}"></i>
+        <i class="fa fa-arrow-up hand" title="upvote" ng-click="PostUtil.upvotePost(post)" style="text-align:center; width:30px; display:inline-block" ng-style="{color: !post.upvoted ? 'rgb(183, 183, 183)' : 'rgb(255, 139, 96)'}"></i>
         <span style="text-align:center; width:30px; display:inline-block; font-family: verdana, arial, helvetica; font-weight:bold;" ng-style="{color: post.upvoted ? 'rgb(255, 139, 96)' : post.downvoted ? 'rgb(148, 148, 255)' : 'rgb(183, 183, 183)'}">{{post.points || '0'}}</span>
-        <i class="fa fa-arrow-down hand" title="downvote" ng-click="downvotePost(post)" style="text-align:center; width:30px; display:inline-block" ng-style="{color: !post.downvoted ? 'rgb(183, 183, 183)' : 'rgb(148, 148, 255)'}"></i>
+        <i class="fa fa-arrow-down hand" title="downvote" ng-click="PostUtil.downvotePost(post)" style="text-align:center; width:30px; display:inline-block" ng-style="{color: !post.downvoted ? 'rgb(183, 183, 183)' : 'rgb(148, 148, 255)'}"></i>
     </div>
     <div class="col-lg-1 col-sm-1 col-md-1" style="width:80px;">
         <img src="{{post.image || '/img/logo.png'}}" style="width:70px; margin-top:5px;" />

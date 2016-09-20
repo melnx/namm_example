@@ -25,6 +25,7 @@ var resources = [];
 var routes = [];
 var connectors = [];
 var connections = [];
+var services = [];
 var debug = true;
 
 exports.debug = debug;
@@ -32,6 +33,7 @@ exports.resources = resources;
 exports.socketConnections = connections;
 exports.routeList = routes;
 exports.connectorList = connectors;
+exports.serviceList = services;
 
 require("./framework/util/util")();
 require("./framework/database/setup")(exports);
@@ -79,6 +81,7 @@ function setupModels(){
 function setupModelEndpoints(modelName){
     setupModelWebAppEndpoints(modelName);
     setupModelApiEndpoints(modelName);
+    setupModelRestApiEndpoints(modelName);
 }
 
 function setupModelsEndpoints(){

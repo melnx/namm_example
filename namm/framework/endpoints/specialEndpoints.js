@@ -16,6 +16,8 @@ module.exports = function(namm){
 
         app.get('/_models.js', isAuthenticated, require('../webapp/modelsjs')(namm));
 
+        app.get('/_services.js', isAuthenticated, require('../webapp/servicesjs')(namm));
+
         app.get('/views/:entity/:view', isAuthenticated, require('../webapp/views')(namm));
     }
 
