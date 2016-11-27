@@ -4,7 +4,7 @@ var Schema = mongoose.Schema;
 module.exports = {
     User: {
         $home: {
-            "user": "/Analytics"
+            "user": "/Posts"
         },
 
         _subs: [{
