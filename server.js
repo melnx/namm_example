@@ -1,4 +1,4 @@
-require('./namm/namm2')
+require('namm')
   .public(__dirname + '/public')
   .layout(__dirname + '/public/base.html')
   .partials(__dirname + '/public/partials')

@@ -1,7 +1,7 @@
 {
-  "name": "namm",
+  "name": "namm-example",
   "version": "1.0.0",
-  "description": "web application framework",
+  "description": "web application framework example",
   "main": "server.js",
   "dependencies": {
     "async": "^2.0.1",
@@ -15,6 +15,7 @@
     "express-session": "^1.14.0",
     "mailgun-js": "^0.7.12",
     "mongoose": "^4.5.9",
+    "namm": "^1.0.24",
     "passport": "^0.3.2",
     "passport-local": "^1.0.0",
     "password-hash": "^1.2.2",
