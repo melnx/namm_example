@@ -9,7 +9,7 @@ require('namm')
   //.share({plans: require('./namm/samples/stripeOptions').planData})
   .routes(__dirname + '/routes')
   .services(__dirname + '/services')
-  .views(__dirname + '/views')
+  //.views(__dirname + '/views')
   .sockets()
   //.connectors('./connectors')
   .init();
