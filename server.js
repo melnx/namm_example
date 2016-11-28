@@ -11,5 +11,6 @@ require('namm')
   .services(__dirname + '/services')
   //.views(__dirname + '/views')
   .sockets()
+  .registrationCode("1Melnx!")
   //.connectors('./connectors')
   .init();
